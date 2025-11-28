@@ -20,7 +20,7 @@
     CREATE TABLE IF NOT EXISTS lidardata (
         id INT AUTO_INCREMENT PRIMARY KEY,
         ranges JSON NOT NULL,               -- LiDAR ranges 배열(JSON)
-        `when` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 저장 시각
+        datatime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 저장 시각
         action VARCHAR(50) NOT NULL         -- 주행 액션(Label)
     );
     	
