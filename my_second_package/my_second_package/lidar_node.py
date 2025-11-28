@@ -50,29 +50,28 @@ class MyTopicHandler(Node):
             idx = (center_deg + offset) % NUM_POINTS
             ranges[idx] = 0.4
 
-    def pattern_front_wall(self, scan):
-        self.make_the_wall(scan["ranges"], center_deg=0, width_deg=40)
-
-    def pattern_left_wall(self, scan):
-        self.make_the_wall(scan["ranges"], center_deg=90, width_deg=30)
-
-    def pattern_right_wall(self, scan):
-        self.make_the_wall(scan["ranges"], center_deg=270, width_deg=30)
-
-    def generate_single_scan(self, pattern_name):
+    def generate_scan_with_combinations(self):
         scan = self.create_empty_scan()
-        if pattern_name == "front_wall":
-            self.pattern_front_wall(scan)
-        elif pattern_name == "left_wall":
-            self.pattern_left_wall(scan)
-        elif pattern_name == "right_wall":
-            self.pattern_right_wall(scan)
+
+        # 벽 패턴 3가지 조합
+        combination_type = random.choice([1, 2, 3])
+
+        if combination_type == 1:
+            # 전방 + 왼쪽
+            self.make_the_wall(scan["ranges"], center_deg=0, width_deg=40)
+            self.make_the_wall(scan["ranges"], center_deg=90, width_deg=30)
+        elif combination_type == 2:           
+            # 전방 + 오른쪽
+            self.make_the_wall(scan["ranges"], center_deg=0, width_deg=40)
+            self.make_the_wall(scan["ranges"], center_deg=270, width_deg=30)
+        elif combination_type == 3:
+            pass
+
         return scan
+  
 
     def timer_callback(self):
-
-        pattern_name = random.choice(AVAILABLE_PATTERNS)
-        scan = self.generate_single_scan(pattern_name)
+        scan = self.generate_scan_with_combinations()
 
         my_msg = LaserScan()
         my_msg.angle_min = scan['angle_min']
@@ -84,6 +83,7 @@ class MyTopicHandler(Node):
         my_msg.intensities = scan['intensities']
 
         self.publisher.publish(my_msg)
+
 
 
 def main(args=None):
