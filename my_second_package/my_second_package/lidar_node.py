@@ -1,4 +1,3 @@
-# 노드 부분
 #!/usr/bin/env python3
 
 import rclpy
@@ -13,11 +12,15 @@ ANGLE_INCREMENT_DEG = 1
 NUM_POINTS = 360
 RANGE_MIN = 0.12
 RANGE_MAX = 3.5
+
 AVAILABLE_PATTERNS = [
     "front_wall",
-    "left_wall",
-    "right_wall"
+    "front_left_wall",
+    "front_right_wall",
+    "all_blocked",  
+    "no_wall"
 ]
+
 class MyTopicHandler(Node):
     def __init__(self):
         super().__init__('lidar_node')
@@ -28,7 +31,7 @@ class MyTopicHandler(Node):
             10
         )
 
-        self.timer = self.create_timer(2.0, self.timer_callback)   # 0.5Hz초마다 실행
+        self.timer = self.create_timer(2.0, self.timer_callback)
 
     def create_empty_scan(self):
         ranges = [RANGE_MAX for _ in range(NUM_POINTS)]
@@ -46,29 +49,37 @@ class MyTopicHandler(Node):
 
     def make_the_wall(self, ranges, center_deg, width_deg):
         half_width = width_deg // 2
+        wall_dist = random.uniform(RANGE_MIN, RANGE_MAX)  # << 랜덤 거리 생성
         for offset in range(-half_width, half_width + 1):
             idx = (center_deg + offset) % NUM_POINTS
-            ranges[idx] = 0.4
+            ranges[idx] = wall_dist
 
     def generate_scan_with_combinations(self):
         scan = self.create_empty_scan()
 
-        # 벽 패턴 3가지 조합
-        combination_type = random.choice([1, 2, 3])
+        pattern = random.choice(AVAILABLE_PATTERNS)
+        self.get_logger().info(f"Pattern selected: {pattern}")
 
-        if combination_type == 1:
-            # 전방 + 왼쪽
+        if pattern == "front_wall":
+            self.make_the_wall(scan["ranges"], center_deg=0, width_deg=40)
+
+        elif pattern == "front_left_wall":
             self.make_the_wall(scan["ranges"], center_deg=0, width_deg=40)
             self.make_the_wall(scan["ranges"], center_deg=90, width_deg=30)
-        elif combination_type == 2:           
-            # 전방 + 오른쪽
+
+        elif pattern == "front_right_wall":
             self.make_the_wall(scan["ranges"], center_deg=0, width_deg=40)
             self.make_the_wall(scan["ranges"], center_deg=270, width_deg=30)
-        elif combination_type == 3:
+
+        elif pattern == "all_blocked":  
+            self.make_the_wall(scan["ranges"], center_deg=0, width_deg=40)
+            self.make_the_wall(scan["ranges"], center_deg=90, width_deg=30)
+            self.make_the_wall(scan["ranges"], center_deg=270, width_deg=30)
+
+        elif pattern == "no_wall":
             pass
 
         return scan
-  
 
     def timer_callback(self):
         scan = self.generate_scan_with_combinations()
@@ -84,15 +95,12 @@ class MyTopicHandler(Node):
 
         self.publisher.publish(my_msg)
 
-
-
 def main(args=None):
     rclpy.init(args=args)
     node = MyTopicHandler()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
