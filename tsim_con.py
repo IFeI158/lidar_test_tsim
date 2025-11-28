@@ -3,9 +3,8 @@ import numpy as np
 import pymysql
 import json
 
-# -----------------------------------
+
 # MySQL 연결
-# -----------------------------------
 db = pymysql.connect(
     host='localhost',
     user='root',
@@ -97,4 +96,4 @@ finally:
     client.terminate()
     cursor.close()
     db.close()
-    print('Disconnected from ROS & MySQL.')
+    print('Disconnected.')
