@@ -49,7 +49,7 @@ class MyTopicHandler(Node):
 
     def make_the_wall(self, ranges, center_deg, width_deg):
         half_width = width_deg // 2
-        wall_dist = random.uniform(RANGE_MIN, RANGE_MAX)  # << 랜덤 거리 생성
+        wall_dist = random.choice([0.3, 0.5, 1.0, 2.0, 3.5, float('inf')]) #랜덤 거리 생성
         for offset in range(-half_width, half_width + 1):
             idx = (center_deg + offset) % NUM_POINTS
             ranges[idx] = wall_dist
