@@ -40,9 +40,8 @@ class LidarSimulator(Node):
         self.publisher_.publish(msg)
         self.get_logger().info(f"Published /scan pattern={scan['meta']['pattern']}")
 
-    # -------------------
+   
     # Scan 데이터 생성
-    # -------------------
     def create_empty_scan(self):
         ranges = [float(RANGE_MAX) for _ in range(NUM_POINTS)]
         intensities = [100.0 for _ in range(NUM_POINTS)]
@@ -79,9 +78,8 @@ class LidarSimulator(Node):
         scan["meta"]["pattern"] = pattern_name
         return scan
 
-# -------------------
+
 # ROS2 entry point
-# -------------------
 def main(args=None):
     rclpy.init(args=args)
     node = LidarSimulator()

@@ -26,7 +26,8 @@ setup(
         'console_scripts': [
             'lidar_simulator = my_second_package.lidar_simulator:main',
             'turtle_lidar_controller = my_second_package.turtle_lidar_controller:main',
-            'lidar_node = my_second_package.lidar_node:main'
+            'lidar_node = my_second_package.lidar_node:main',
+            'lidar_analysis = my_second_package.lidar_analysis:main'
         ],
     },
 )
