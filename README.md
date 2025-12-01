@@ -34,3 +34,18 @@
 ```jsx
 ros2 launch rosbridge_server rosbridge_websocket_launch.xml
 ```
+
+랜덤 lidar 데이타 생성
+```jsx
+ros2 run  my_second_package  lidar_node
+```
+
+안정거리 테스트
+```jsx
+ros2 run my_second_package lidar_analysis
+```
+
+터틀심 제어 연동
+```jsx
+ros2 run my_second_package turtle_lidar_controller
+```
