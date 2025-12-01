@@ -27,7 +27,8 @@ setup(
             'lidar_simulator = my_second_package.lidar_simulator:main',
             'turtle_lidar_controller = my_second_package.turtle_lidar_controller:main',
             'lidar_node = my_second_package.lidar_node:main',
-            'lidar_analysis = my_second_package.lidar_analysis:main'
+            'lidar_analysis = my_second_package.lidar_analysis:main',
+            'analysis_and_csv = my_second_package.analysis_and_csv:main'
         ],
     },
 )

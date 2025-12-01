@@ -8,7 +8,7 @@ class LidarAnalyze(Node):
     def __init__(self):
         super().__init__('lidar_analyzer')
         self.subscription = self.create_subscription(
-            LaserScan, "/lidar_data_mock", self.listner_callback, 10)
+            LaserScan, "/scan", self.listner_callback, 10)
     
     def listner_callback(self, msg):
         # 1. ROS data to Numpy
@@ -21,7 +21,7 @@ class LidarAnalyze(Node):
         front_ranges = np.concatenate((ranges[:30], ranges[-30:]))
         left_ranges = ranges[80:100]
         right_ranges = ranges[260:280]
-
+        back_ranges = ranges[160:200]
 
         # 4. calculate min and mean
         min_fdist = np.min(front_ranges)
@@ -30,17 +30,20 @@ class LidarAnalyze(Node):
         avg_ldist = np.mean(left_ranges)
         min_rdist = np.min(right_ranges)
         avg_rdist = np.mean(right_ranges)
+        min_bdist = np.min(back_ranges)
+        avg_bdist = np.mean(back_ranges)
 
-
-        safe_dist = 1
+        safe_dist = 0.3
         if min_fdist < safe_dist:
             self.get_logger().warn(f"front dangerous! {min_fdist}m left!") 
         if min_ldist < safe_dist:
             self.get_logger().warn(f"left dangerous! {min_ldist}m left!") 
         if min_rdist < safe_dist:
             self.get_logger().warn(f"right dangerous! {min_rdist}m left!") 
-        if min_fdist >= safe_dist and min_ldist >= safe_dist and min_rdist >= safe_dist:
-             self.get_logger().info(f"safe ranges...front:{avg_fdist},left:{avg_ldist},right:{avg_rdist}m left")
+        if min_bdist < safe_dist:
+            self.get_logger().warn(f"back dangerous! {min_bdist}m left!") 
+        if min_fdist >= safe_dist and min_ldist >= safe_dist and min_rdist >= safe_dist and min_bdist >= safe_dist:
+             self.get_logger().info(f"safe ranges... \n front:{avg_fdist},left:{avg_ldist},right:{avg_rdist}m back:{avg_rdist}m left")
 
 def main() :
     rclpy.init()
